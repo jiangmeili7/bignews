@@ -67,6 +67,12 @@
                     $('.user_center_link>img').attr('src',res.data.userPic);
                     $('.user_info>span').html('欢迎&nbsp;&nbsp;'+res.data.nickname);
                 }
+            });
+            // 退出登录
+            $('.logout').click(function(){
+                // 删除token
+                localStorage.removeItem('token');
+                window.location.href='./login.html';
             })
         })
     </script>
