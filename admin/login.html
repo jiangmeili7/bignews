@@ -92,19 +92,23 @@
             password: userPwd
           },
           success: function (res) {
-            window.localStorage.setItem('token',res.token)
-            $('.modal-body').html(res.msg);
-            $('#myModal').modal();
-            //判断用户名或者密码是否正确
-            // console.log(res);
+            // 处理响应结果 a.成功：跳转管理系统首页 b.失败：提示用户
             if (res.code == 200) {
-              // alert('欢迎回家，亲');
-              // $('.modal-body').html('欢迎回家，亲');
-              // $('#myModal').modal();
-              //跳转的网站的首页
+              // 使用模态框
+              $('.modal-body>p').text('登录成功');
+              // 按Esc键可以关闭模态框
+              $('#myModal').modal({keyboard: true });
+              //  模态款隐藏事件
               $('#myModal').on('hidden.bs.modal', function (e) {
+                // 1.将服务器 返回的token存入localstorage
+                window.localStorage.setItem('token', res.token)
+                //2. 跳转首页 
                 window.location.href = './index.html';
               })
+              // 使用模态框
+              $('.modal-body').html(res.msg);
+              // 按ESC键可以关闭模态框
+              $('#myModal').modal({ keyboard: true });
             }
           }
         })
