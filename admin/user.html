@@ -44,7 +44,7 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
                     <div class="col-sm-10">
                         <img src="images/2.jpg" alt="" class="user_pic">
-                        <input style="display: block" name="userPic" type="file" id="exampleInputFile">
+                        <input style="display: none" name="userPic" type="file" id="exampleInputFile">
                         <!-- 给label标签的for属性赋值,值是input标签的id,那这样的话点击label就相当于点击了input -->
                         <br>
                         <label for="exampleInputFile">
@@ -68,6 +68,37 @@
             </form>
         </div>
     </div>
+
+    <script src="./libs/http.js"></script>
+    <script>
+        // 当用户点击跳转到用户页面的时候，就应该将用户的信息获取，填充到表单中
+        $(function () {
+            $.get({
+                url: BigNew.user_detail,
+                success: function (res) {
+                    // 当数据获取成功，渲染在页面上
+                    if (res.code == 200) {
+                        //因为数据中的字段名和表单中的每个表单元素的类名是相同的，所以我们可以这么处理
+                        for (var key in res.data){
+                            $('input.'+key).val(res.data[key]);
+                        }
+                        $('.user_pic').attr('src', res.data.userPic);
+                    }
+                }
+            })
+            // 给文件域按钮注册一个change事件，当选择好图片之后，在页面显示预览效果
+            $('#exampleInputFile').on('change',function(){
+                // 将选择的图片转换成一个url地址
+                var  imglcon =this.files[0];
+                // window上有一个url对象，在这个对象中有一个createObjectURL，将图片的信息转换为url地址
+                var url=URL.createObjectURL(imglcon);
+                // 将这个地址设置img的src属性
+                $('.user_pic').attr('src',url);
+            })
+        })
+
+
+    </script>
 </body>
 
 </html>
