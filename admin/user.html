@@ -79,21 +79,56 @@
                     // 当数据获取成功，渲染在页面上
                     if (res.code == 200) {
                         //因为数据中的字段名和表单中的每个表单元素的类名是相同的，所以我们可以这么处理
-                        for (var key in res.data){
-                            $('input.'+key).val(res.data[key]);
+                        for (var key in res.data) {
+                            $('input.' + key).val(res.data[key]);
                         }
                         $('.user_pic').attr('src', res.data.userPic);
                     }
                 }
             })
             // 给文件域按钮注册一个change事件，当选择好图片之后，在页面显示预览效果
-            $('#exampleInputFile').on('change',function(){
+            $('#exampleInputFile').on('change', function () {
                 // 将选择的图片转换成一个url地址
-                var  imglcon =this.files[0];
-                // window上有一个url对象，在这个对象中有一个createObjectURL，将图片的信息转换为url地址
-                var url=URL.createObjectURL(imglcon);
+                var imglcon = this.files[0];
+                // window上有一个url对象， 在这个对象中有一个createObjectURL，将图片的信息转换为url地址
+                var url = URL.createObjectURL(imglcon);
                 // 将这个地址设置img的src属性
-                $('.user_pic').attr('src',url);
+                $('.user_pic').attr('src', url);
+            })
+            // 给修改的按钮注册点击事件
+            $('button.btn-edit').on('click', function (e) {
+                // 阻止默认行为
+                e.preventDefault();
+                // 获取表单信息
+                // 获取form表单 formData只能处理元素的DOM对象
+                var form = $('#form')[0];
+                var userData = new FormData(form);
+                // 发送ajax请求
+                $.post({
+                    url: BigNew.user_edit,
+                    data: userData,
+                    // 不需要设置请求类型
+                    contentType: false,
+                    // 不需要进行编码
+                    processData: false,
+                    success: function (res) {
+                        if (res.code == 200) {
+                            $.ajax({
+                                type: 'get',
+                                url: window.BigNew.user_info,
+                                success: function (res) {
+                                    //获取到返回的用户信息，在页面渲染
+                                    // parent在子页面获取到父页面的元素
+                                    parent.$('.user_info>img').attr('src', res.data.userPic);
+                                    parent.$('.user_info>span').html('欢迎&nbsp;&nbsp;' + res.data.nickname);
+                                    parent.$('.user_center_link>img').attr('src', res.data.userPic);
+                                    // 刷新子页面
+                                    window.location.reload();
+                                }
+                            })
+                        }
+                    }
+                })
             })
         })
 
